@@ -14,41 +14,42 @@ namespace MountSend
         private const string AppName = "10Micron Mount Fixer by Per Frejvall";
         private static NetworkStream _stream;
         private static string _decimalSeparator;
-
-
+        
         public static void Main(string[] args)
         {
-            //args =
-            //{
-            //};
-
             _decimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
             int auto = 0;
-
-
-            try {
+            
+            try
+            {
                 string ipAddress;
                 decimal hpa;
                 decimal tmp;
                 string rep;
 
                 TcpClient tcp = new TcpClient();
-                if (args.Length < 1) {
+                if (args.Length < 1)
+                {
                     Help();
                     Environment.Exit(0);
                 }
 
                 //See if we are to find the IP address in environment
-	        
 
-                if (args[args.Length - 1] == "/a") {
+
+                if (args[args.Length - 1] == "/a")
+                {
                     ipAddress = Environment.GetEnvironmentVariable("MOUNT", EnvironmentVariableTarget.User);
-                    if (ipAddress == null) {
-                        Console.WriteLine("?Cannot retrieve IP address of mount. Try saving it with the save command first.");
+                    if (ipAddress == null)
+                    {
+                        Console.WriteLine(
+                            "?Cannot retrieve IP address of mount. Try saving it with the save command first.");
                         return;
                     }
                     auto = 1;
-                } else {
+                }
+                else
+                {
                     ipAddress = args[0];
                 }
 
@@ -56,10 +57,10 @@ namespace MountSend
                 _stream = tcp.GetStream();
 
                 string command = args[1 - auto].Trim().ToLower();
-            
 
-                switch (command) {
 
+                switch (command)
+                {
                     case "park":
                     case "p":
                         SendCommand(":KA#");
@@ -100,7 +101,8 @@ namespace MountSend
                     case "maxslew":
                         int rate = int.Parse(args[2 - auto]);
                         SendCommand(":Sw" + rate.ToString().Trim() + "#");
-                        if (GetReply(1000) == "0") {
+                        if (GetReply(1000) == "0")
+                        {
                             Console.WriteLine("?Invalid rate");
                         }
 
@@ -120,31 +122,41 @@ namespace MountSend
                         SendCommand(":Sa" + AltString(alt) + "*00#");
                         rep = GetReply(1000);
                         Debug.WriteLine("Sa: " + rep);
-                        if (rep == "1") {
+                        if (rep == "1")
+                        {
                             SendCommand(":Sz" + az.ToString().Trim() + "*00#");
                             rep = GetReply(1000);
                             Debug.WriteLine("Sz: " + rep);
-                            if (rep == "1") {
+                            if (rep == "1")
+                            {
                                 SendCommand(":MA#");
                                 string q = GetReply(1000);
                                 Debug.WriteLine("MA: " + q);
-                                if (q.Left(1) != "0") {
+                                if (q.Left(1) != "0")
+                                {
                                     Console.WriteLine("? " + q);
                                     Environment.Exit(0);
                                 }
-                            } else {
+                            }
+                            else
+                            {
                                 Console.WriteLine("?Coordinates may not be reachable");
                                 Environment.Exit(0);
                             }
-                        } else {
+                        }
+                        else
+                        {
                             Console.WriteLine("?Coordinates may not be reachable");
                             Environment.Exit(0);
                         }
-                        if (command == "movew") {
-                            if (!WaitForStatus(MountState.stationary, 60)) {
+                        if (command == "movew")
+                        {
+                            if (!WaitForStatus(MountState.stationary, 60))
+                            {
                                 Console.WriteLine("?Timeout");
                             }
-                            if (tracking == MountState.tracking) {
+                            if (tracking == MountState.tracking)
+                            {
                                 SendCommand(":AP#");
                                 //re-instate tracking if it was on
                             }
@@ -158,13 +170,17 @@ namespace MountSend
                         tmp = decimal.Parse(args[3 - auto]);
                         SendCommand(":SRTMP" + MountDecimal(tmp) + "#");
                         rep = GetReply(1000);
-                        if (rep == "1") {
+                        if (rep == "1")
+                        {
                             SendCommand(":SRPRS" + MountDecimal(hpa) + "#");
                             string q = GetReply(1000);
-                            if (q != "1") {
+                            if (q != "1")
+                            {
                                 Console.WriteLine("?Refraction pressure invalid");
                             }
-                        } else {
+                        }
+                        else
+                        {
                             Console.WriteLine("?Refraction temp invalid");
                         }
 
@@ -172,23 +188,30 @@ namespace MountSend
                     case "autorefr":
                     case "ar":
                         //Try to find file
-                        if (File.Exists(args[2 - auto])) {
+                        if (File.Exists(args[2 - auto]))
+                        {
                             StreamReader streamReader = new StreamReader(args[2 - auto]);
-                            string[] data = streamReader.ReadLine().Split(' ');
-                            hpa = ParseDecimal(data[10]);
-                            tmp = ParseDecimal(data[2]);
+                            string[] data = streamReader.ReadLine()?.Split(' ');
+                            hpa = ParseDecimal(data?[10]);
+                            tmp = ParseDecimal(data?[2]);
                             SendCommand(":SRTMP" + MountDecimal(tmp) + "#");
                             rep = GetReply(1000);
-                            if (rep == "1") {
+                            if (rep == "1")
+                            {
                                 SendCommand(":SRPRS" + MountDecimal(hpa) + "#");
                                 string q = GetReply(1000);
-                                if (q != "1") {
+                                if (q != "1")
+                                {
                                     Console.WriteLine("?Refraction pressure invalid");
                                 }
-                            } else {
+                            }
+                            else
+                            {
                                 Console.WriteLine("?Refraction temp invalid");
                             }
-                        } else {
+                        }
+                        else
+                        {
                             Console.WriteLine("?Refraction file not found.");
                         }
 
@@ -197,42 +220,47 @@ namespace MountSend
                         //New behavior: do it directly with high precision
                         Stopwatch sw = new Stopwatch();
 
-                        DateTime currenttime = DateTime.Now;
+                        DateTime currentTime = DateTime.Now;
                         sw.Start();
-                        SendCommand((":SL" + $"{currenttime:HH:mm:ss.ff}" + "#"));
+                        SendCommand((":SL" + $"{currentTime:HH:mm:ss.ff}" + "#"));
                         rep = GetReply(1000);
                         sw.Stop();
 
-                        Console.WriteLine("  Set to  " + $"{currenttime:HH:mm:ss.ff}");
+                        Console.WriteLine("  Set to  " + $"{currentTime:HH:mm:ss.ff}");
                         Console.WriteLine("  Took " + sw.ElapsedMilliseconds.ToString("0") + " ms");
-                        if (rep.Left(1) == "1") {
-                            SendCommand(":SC" + $"{currenttime:MM\\/dd\\/yyyy}" + "#");
+                        if (rep.Left(1) == "1")
+                        {
+                            SendCommand(":SC" + $"{currentTime:MM\\/dd\\/yyyy}" + "#");
                             rep = GetReply(1000);
-                            if (rep.Left(1) != "0") {
-                                Console.WriteLine("Updated");
-                            } else {
-                                Console.WriteLine("?Error");
-                            }
-                        } else {
+                            Console.WriteLine(rep.Left(1) != "0" ? "Updated" : "?Error");
+                        }
+                        else
+                        {
                             Console.WriteLine("?Error");
                         }
 
                         break;
                     case "save":
                         //Save the IP address for the future
-                        try {
+                        try
+                        {
                             Environment.SetEnvironmentVariable("MOUNT", args[0], EnvironmentVariableTarget.User);
                             Console.WriteLine("Saved " + args[0] + " to 'MOUNT'.");
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex)
+                        {
                             Console.WriteLine("?Error saving user variable (" + ex.Message);
                         }
 
                         break;
 
                     case "fw":
-                        try {
+                        try
+                        {
                             Console.WriteLine("Firmware: " + ReadFirmware().ToString("0.0000"));
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex)
+                        {
                             Console.WriteLine("?Error reading firmware version from mount: " + ex);
                         }
 
@@ -244,10 +272,13 @@ namespace MountSend
                 }
 
                 tcp.Close();
-
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex.Message);
             }
+
+            Console.ReadKey();
         }
 
         public static decimal ReadFirmware()
@@ -261,11 +292,12 @@ namespace MountSend
             string[] ss = s.Replace("#", "").Split('.');
             decimal firmWareVersion = decimal.Parse(ss[0]);
             if (ss.GetUpperBound(0) > 0)
-                firmWareVersion += decimal.Parse(ss[1]) / 100;
+                firmWareVersion += decimal.Parse(ss[1])/100;
             if (ss.GetUpperBound(0) > 1)
-                firmWareVersion += decimal.Parse(ss[2]) / 10000;
+                firmWareVersion += decimal.Parse(ss[2])/10000;
             return firmWareVersion;
         }
+
         public static void SendCommand(string s)
         {
             Byte[] data = Encoding.ASCII.GetBytes(s);
@@ -275,14 +307,17 @@ namespace MountSend
         public static bool WaitForStatus(MountState stat, int timeout)
         {
             //Wait for a certain status to be obtained for a specified number of seconds
-            int t = timeout * 4;
+            int t = timeout*4;
             while (t > 0)
             {
                 var s = GetStatus();
-                if (s != stat) {
+                if (s != stat)
+                {
                     Thread.Sleep(250);
                     t -= 1;
-                } else {
+                }
+                else
+                {
                     break; // TODO: might not be correct. Was : Exit While
                 }
             }
@@ -295,7 +330,8 @@ namespace MountSend
         {
             SendCommand(":Gstat#");
             string rep = GetReply(1000);
-            switch (rep) {
+            switch (rep)
+            {
                 case "0#":
                     return MountState.tracking;
                 case "1#":
@@ -327,14 +363,16 @@ namespace MountSend
         {
             //stream.ReadTimeout = timeout
             string s = "";
-            for (int i = 1; i <= timeout; i++) {
+            for (int i = 1; i <= timeout; i++)
+            {
                 if (_stream.DataAvailable)
                     break; // TODO: might not be correct. Was : Exit For
                 Thread.Sleep(1);
             }
 
-            while (_stream.DataAvailable) {
-                s += (char)_stream.ReadByte();
+            while (_stream.DataAvailable)
+            {
+                s += (char) _stream.ReadByte();
             }
 
             return s;
@@ -347,7 +385,8 @@ namespace MountSend
             Console.WriteLine(" mountsend <ip-address> <command> [<options>].");
             Console.WriteLine("     unpark            Unparks mount. No reply.");
             Console.WriteLine("     park              Parks mount. No reply.");
-            Console.WriteLine("     parkw             Parks mount and waits for completion in 1 min. Replies success or timeout");
+            Console.WriteLine(
+                "     parkw             Parks mount and waits for completion in 1 min. Replies success or timeout");
             Console.WriteLine("     stop              Stops tracking. No reply.");
             Console.WriteLine("     start             Starts tracking. No reply.");
             Console.WriteLine("     gpsupdate         Updates site info from GPS. Reports success or error.");
@@ -389,10 +428,3 @@ namespace MountSend
         }
     }
 }
-
-//=======================================================
-//Service provided by Telerik (www.telerik.com)
-//Conversion powered by NRefactory.
-//Twitter: @telerik
-//Facebook: facebook.com/telerik
-//=======================================================
