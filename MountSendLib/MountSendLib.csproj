@@ -4,18 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{609A67F4-BB37-448A-BD52-E1F24CE445BA}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{2FA9EFC7-61E2-4D6B-84A1-F46DC8FFC802}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MountSend</RootNamespace>
-    <AssemblyName>MountSend</AssemblyName>
+    <AssemblyName>MountSendLib</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -25,7 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -44,18 +41,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MountSend.cs" />
+    <Compile Include="Commands\Alignment\StartTrackingCommand.cs" />
+    <Compile Include="Commands\Alignment\StopTrackingCommand.cs" />
+    <Compile Include="Commands\CommandSender.cs" />
+    <Compile Include="Commands\Custom\CustomCommand.cs" />
+    <Compile Include="Commands\GPS\GPSUpdateCommand.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\HomePark\ParkAndWaitCommand.cs" />
+    <Compile Include="Commands\HomePark\UnparkCommand.cs" />
+    <Compile Include="Commands\HomePark\ParkCommand.cs" />
+    <Compile Include="Commands\Information\FirmwareCommand.cs" />
+    <Compile Include="Commands\Information\StatusCommand.cs" />
+    <Compile Include="Commands\Movement\SlewAltAzCommand.cs" />
+    <Compile Include="Commands\Set\SetTimeCommand.cs" />
+    <Compile Include="Commands\Set\SetMaxSlewCommand.cs" />
+    <Compile Include="Commands\Set\SetRefractionCommand.cs" />
+    <Compile Include="MountState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Status.cs" />
+    <Compile Include="StringExtension.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MountSendLib\MountSendLib.csproj">
-      <Project>{2FA9EFC7-61E2-4D6B-84A1-F46DC8FFC802}</Project>
-      <Name>MountSendLib</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

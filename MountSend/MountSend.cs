@@ -1,41 +1,34 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
+using System.Reflection;
+using MountSend.Commands;
+using MountSend.Commands.Alignment;
+using MountSend.Commands.Custom;
+using MountSend.Commands.GPS;
+using MountSend.Commands.HomePark;
+using MountSend.Commands.Information;
+using MountSend.Commands.Set;
 
 namespace MountSend
 {
     public static class MountSend
     {
-        public const string Version = "v2.10";
-        private const string AppName = "10Micron Mount Fixer by Per Frejvall";
-        private static NetworkStream _stream;
-        private static string _decimalSeparator;
-        
+        private static CommandSender _commandSender;
+
         public static void Main(string[] args)
         {
-            _decimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
             int auto = 0;
-            
+
             try
             {
                 string ipAddress;
-                decimal hpa;
-                decimal tmp;
-                string rep;
 
-                TcpClient tcp = new TcpClient();
                 if (args.Length < 1)
                 {
                     Help();
                     Environment.Exit(0);
                 }
-
-                //See if we are to find the IP address in environment
-
 
                 if (args[args.Length - 1] == "/a")
                 {
@@ -53,340 +46,189 @@ namespace MountSend
                     ipAddress = args[0];
                 }
 
-                tcp.Connect(ipAddress, 3492);
-                _stream = tcp.GetStream();
+                _commandSender = new CommandSender(ipAddress);
+                _commandSender.OpenConnection();
 
-                string command = args[1 - auto].Trim().ToLower();
+                string commandString = args[1 - auto].Trim().ToLower();
 
-
-                switch (command)
-                {
-                    case "park":
-                    case "p":
-                        SendCommand(":KA#");
-
-                        break;
-                    case "parkw":
-                        SendCommand(":KA#");
-                        Thread.Sleep(100);
-                        Console.WriteLine(WaitForStatus(MountState.parked, 60) ? "Parked OK" : "Timeout");
-
-                        break;
-                    case "unpark":
-                    case "up":
-                        SendCommand(":PO#");
-
-                        break;
-                    case "command":
-                    case "c":
-                        SendCommand(args[2 - auto]);
-
-                        break;
-                    case "waitstationary":
-                        WaitForStatus(MountState.stationary, 30);
-
-                        break;
-                    case "stat":
-                        Console.WriteLine(GetStatus().ToString());
-
-                        break;
-                    case "stop":
-                        SendCommand(":AL#");
-
-                        break;
-                    case "start":
-                        SendCommand(":AP#");
-
-                        break;
-                    case "maxslew":
-                        int rate = int.Parse(args[2 - auto]);
-                        SendCommand(":Sw" + rate.ToString().Trim() + "#");
-                        if (GetReply(1000) == "0")
-                        {
-                            Console.WriteLine("?Invalid rate");
-                        }
-
-                        break;
-                    case "gpsupdate":
-                        SendCommand(":gT#");
-                        Console.WriteLine(GetReply(30000) == "1" ? "Updated" : "?Error");
-
-                        break;
-                    case "move":
-                    case "movew":
-                        //Start by getting tracking state
-                        MountState tracking = GetStatus();
-
-                        int az = int.Parse(args[2 - auto]);
-                        int alt = int.Parse(args[3 - auto]);
-                        SendCommand(":Sa" + AltString(alt) + "*00#");
-                        rep = GetReply(1000);
-                        Debug.WriteLine("Sa: " + rep);
-                        if (rep == "1")
-                        {
-                            SendCommand(":Sz" + az.ToString().Trim() + "*00#");
-                            rep = GetReply(1000);
-                            Debug.WriteLine("Sz: " + rep);
-                            if (rep == "1")
-                            {
-                                SendCommand(":MA#");
-                                string q = GetReply(1000);
-                                Debug.WriteLine("MA: " + q);
-                                if (q.Left(1) != "0")
-                                {
-                                    Console.WriteLine("? " + q);
-                                    Environment.Exit(0);
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("?Coordinates may not be reachable");
-                                Environment.Exit(0);
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("?Coordinates may not be reachable");
-                            Environment.Exit(0);
-                        }
-                        if (command == "movew")
-                        {
-                            if (!WaitForStatus(MountState.stationary, 60))
-                            {
-                                Console.WriteLine("?Timeout");
-                            }
-                            if (tracking == MountState.tracking)
-                            {
-                                SendCommand(":AP#");
-                                //re-instate tracking if it was on
-                            }
-                        }
-
-                        break;
-                    case "refr":
-                    case "refraction":
-                    case "r":
-                        hpa = decimal.Parse(args[2 - auto]);
-                        tmp = decimal.Parse(args[3 - auto]);
-                        SendCommand(":SRTMP" + MountDecimal(tmp) + "#");
-                        rep = GetReply(1000);
-                        if (rep == "1")
-                        {
-                            SendCommand(":SRPRS" + MountDecimal(hpa) + "#");
-                            string q = GetReply(1000);
-                            if (q != "1")
-                            {
-                                Console.WriteLine("?Refraction pressure invalid");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("?Refraction temp invalid");
-                        }
-
-                        break;
-                    case "autorefr":
-                    case "ar":
-                        //Try to find file
-                        if (File.Exists(args[2 - auto]))
-                        {
-                            StreamReader streamReader = new StreamReader(args[2 - auto]);
-                            string[] data = streamReader.ReadLine()?.Split(' ');
-                            hpa = ParseDecimal(data?[10]);
-                            tmp = ParseDecimal(data?[2]);
-                            SendCommand(":SRTMP" + MountDecimal(tmp) + "#");
-                            rep = GetReply(1000);
-                            if (rep == "1")
-                            {
-                                SendCommand(":SRPRS" + MountDecimal(hpa) + "#");
-                                string q = GetReply(1000);
-                                if (q != "1")
-                                {
-                                    Console.WriteLine("?Refraction pressure invalid");
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("?Refraction temp invalid");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("?Refraction file not found.");
-                        }
-
-                        break;
-                    case "time":
-                        //New behavior: do it directly with high precision
-                        Stopwatch sw = new Stopwatch();
-
-                        DateTime currentTime = DateTime.Now;
-                        sw.Start();
-                        SendCommand((":SL" + $"{currentTime:HH:mm:ss.ff}" + "#"));
-                        rep = GetReply(1000);
-                        sw.Stop();
-
-                        Console.WriteLine("  Set to  " + $"{currentTime:HH:mm:ss.ff}");
-                        Console.WriteLine("  Took " + sw.ElapsedMilliseconds.ToString("0") + " ms");
-                        if (rep.Left(1) == "1")
-                        {
-                            SendCommand(":SC" + $"{currentTime:MM\\/dd\\/yyyy}" + "#");
-                            rep = GetReply(1000);
-                            Console.WriteLine(rep.Left(1) != "0" ? "Updated" : "?Error");
-                        }
-                        else
-                        {
-                            Console.WriteLine("?Error");
-                        }
-
-                        break;
-                    case "save":
-                        //Save the IP address for the future
-                        try
-                        {
-                            Environment.SetEnvironmentVariable("MOUNT", args[0], EnvironmentVariableTarget.User);
-                            Console.WriteLine("Saved " + args[0] + " to 'MOUNT'.");
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("?Error saving user variable (" + ex.Message);
-                        }
-
-                        break;
-
-                    case "fw":
-                        try
-                        {
-                            Console.WriteLine("Firmware: " + ReadFirmware().ToString("0.0000"));
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("?Error reading firmware version from mount: " + ex);
-                        }
-
-                        break;
-                    default:
-                        Help();
-                        Environment.Exit(0);
-                        break;
-                }
-
-                tcp.Close();
+                var result = ExecuteCommand(args, commandString, auto);
+                Console.WriteLine(result);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-
-            Console.ReadKey();
         }
 
-        public static decimal ReadFirmware()
+        private static string ExecuteCommand(string[] args, string commandString, int auto)
         {
-            //Read mount firmware version.
-            //Firmware version is stored as a decimal.
-            //2.9.9 yields 2.0909, 2.9.19 yields 2.0919 and 2.11.3 yields 2.1103
+            object command;
+            object commandResult = null;
+            string message = null;
 
-            SendCommand(":GVN#");
-            string s = GetReply(1000);
-            string[] ss = s.Replace("#", "").Split('.');
-            decimal firmWareVersion = decimal.Parse(ss[0]);
-            if (ss.GetUpperBound(0) > 0)
-                firmWareVersion += decimal.Parse(ss[1])/100;
-            if (ss.GetUpperBound(0) > 1)
-                firmWareVersion += decimal.Parse(ss[2])/10000;
-            return firmWareVersion;
-        }
-
-        public static void SendCommand(string s)
-        {
-            Byte[] data = Encoding.ASCII.GetBytes(s);
-            _stream.Write(data, 0, data.Length);
-        }
-
-        public static bool WaitForStatus(MountState stat, int timeout)
-        {
-            //Wait for a certain status to be obtained for a specified number of seconds
-            int t = timeout*4;
-            while (t > 0)
+            switch (commandString)
             {
-                var s = GetStatus();
-                if (s != stat)
-                {
-                    Thread.Sleep(250);
-                    t -= 1;
-                }
-                else
-                {
-                    break; // TODO: might not be correct. Was : Exit While
-                }
-            }
-            if (t > 0)
-                return true;
-            return false;
-        }
+                case "park":
+                case "p":
+                    new ParkCommand(_commandSender).Execute();
+                    break;
 
-        public static MountState GetStatus()
-        {
-            SendCommand(":Gstat#");
-            string rep = GetReply(1000);
-            switch (rep)
-            {
-                case "0#":
-                    return MountState.tracking;
-                case "1#":
-                    return MountState.stoppedOrHomed;
-                case "2#":
-                    return MountState.parking;
-                case "3#":
-                    return MountState.unparking;
-                case "4#":
-                    return MountState.slewinghome;
-                case "5#":
-                    return MountState.parked;
-                case "6#":
-                    return MountState.slewing;
-                case "7#":
-                    return MountState.stationary;
-                case "9#":
-                    return MountState.outsideTrackLimits;
-                case "11#":
-                    return MountState.needsOK;
-                case "99#":
-                    return MountState.mountError;
+                case "parkw":
+                    command = new ParkAndWaitCommand(_commandSender);
+                    commandResult = ((ParkAndWaitCommand) command).Execute();
+                    message = ((ParkAndWaitCommand) command).Message;
+                    break;
+
+                case "unpark":
+                case "up":
+                    new UnparkCommand(_commandSender).Execute();
+                    break;
+
+                case "command":
+                case "c":
+                    new CustomCommand(_commandSender).Execute(new[] {args[2 - auto]});
+                    break;
+
+                case "waitstationary":
+                    Status.WaitForStatus(_commandSender, MountState.Stationary, 30);
+                    break;
+
+                case "stat":
+                    command = new StatusCommand(_commandSender);
+                    commandResult = ((StatusCommand) command).Execute();
+                    break;
+
+                case "stop":
+                    new StopTrackingCommand(_commandSender).Execute();
+                    break;
+
+                case "start":
+                    new StartTrackingCommand(_commandSender).Execute();
+                    break;
+
+                case "maxslew":
+                    command = new SetMaxSlewCommand(_commandSender);
+                    commandResult = ((SetMaxSlewCommand) command).Execute(new[] {args[2 - auto]});
+                    message = ((SetMaxSlewCommand) command).Message;
+                    break;
+
+                case "gpsupdate":
+                    command = new GPSUpdateCommand(_commandSender);
+                    commandResult = ((GPSUpdateCommand) command).Execute();
+                    message = ((GPSUpdateCommand) command).Message;
+                    break;
+
+                case "move":
+                case "movew":
+                    MountState tracking = new StatusCommand(_commandSender).Execute();
+                    string az = args[2 - auto];
+                    string alt = args[3 - auto];
+                    string enableTraking = tracking == MountState.Tracking && commandString == "movew" ? "1" : "0";
+                    command = new SlewAltAzCommand(_commandSender);
+                    commandResult = ((SlewAltAzCommand) command).Execute(new[] {az, alt, enableTraking});
+                    message = ((SlewAltAzCommand) command).Message;
+                    break;
+
+                case "refr":
+                case "refraction":
+                case "r":
+                    string pressure = args[2 - auto];
+                    string temperature = args[3 - auto];
+                    command = new SetRefractionCommand(_commandSender);
+                    commandResult = ((SetRefractionCommand) command).Execute(new[] {pressure, temperature});
+                    message = ((SetRefractionCommand) command).Message;
+                    break;
+
+                case "autorefr":
+                case "ar":
+                    if (File.Exists(args[2 - auto]))
+                    {
+                        StreamReader streamReader = new StreamReader(args[2 - auto]);
+                        string[] data = streamReader.ReadLine()?.Split(' ');
+                        string autoPressure = ParseDecimal(data?[10]);
+                        string autoTemperature = ParseDecimal(data?[2]);
+                        command = new SetRefractionCommand(_commandSender);
+                        commandResult = ((SetRefractionCommand) command).Execute(new[] {autoPressure, autoTemperature});
+                        message = ((SetRefractionCommand) command).Message;
+                    }
+                    else
+                    {
+                        message = "?Refraction file not found.";
+                    }
+                    break;
+
+                case "time":
+                    command = new SetTimeCommand(_commandSender);
+                    commandResult = ((SetTimeCommand) command).Execute();
+                    message = ((SetTimeCommand) command).Message;
+                    break;
+
+                case "save":
+                    SaveIpAddress(args);
+                    break;
+
+                case "fw":
+                    command = new FirmwareCommand(_commandSender);
+                    commandResult = ((FirmwareCommand) command).Execute();
+                    break;
                 default:
-                    return MountState.noreply;
+                    Help();
+                    Environment.Exit(0);
+                    break;
             }
+
+            var result = "";
+            if (commandResult != null)
+            {
+                result += $"Result : {commandResult}\n";
+            }
+
+            if (!string.IsNullOrWhiteSpace(message))
+            {
+                result += $"{message}\n";
+            }
+
+            _commandSender.CloseConnection();
+            return result;
         }
 
-        public static string GetReply(int timeout)
+        private static void SaveIpAddress(string[] args)
         {
-            //stream.ReadTimeout = timeout
-            string s = "";
-            for (int i = 1; i <= timeout; i++)
+            try
             {
-                if (_stream.DataAvailable)
-                    break; // TODO: might not be correct. Was : Exit For
-                Thread.Sleep(1);
+                Environment.SetEnvironmentVariable("MOUNT", args[0], EnvironmentVariableTarget.User);
+                Console.WriteLine("Saved " + args[0] + " to 'MOUNT'.");
             }
-
-            while (_stream.DataAvailable)
+            catch (Exception ex)
             {
-                s += (char) _stream.ReadByte();
+                Console.WriteLine("?Error saving user variable (" + ex.Message);
             }
-
-            return s;
         }
 
         public static void Help()
         {
-            Console.WriteLine(AppName + " " + Version);
+            var execAssembly = Assembly.GetExecutingAssembly();
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            var appName = Assembly.GetExecutingAssembly().GetName().Name;
+            var description = "";
+
+            var type = typeof(AssemblyDescriptionAttribute);
+
+            if (Attribute.IsDefined(execAssembly, type))
+            {
+                var assemblyDescriptionAttribute =
+                    (AssemblyDescriptionAttribute) Attribute.GetCustomAttribute(execAssembly, type);
+                description = assemblyDescriptionAttribute.Description;
+            }
+
+            Console.WriteLine($@"{appName} v{version.Major}.{version.Minor}.{version.Build}");
+            Console.WriteLine(description);
+            Console.WriteLine();
             Console.WriteLine("Usage:");
             Console.WriteLine(" mountsend <ip-address> <command> [<options>].");
             Console.WriteLine("     unpark            Unparks mount. No reply.");
             Console.WriteLine("     park              Parks mount. No reply.");
-            Console.WriteLine(
-                "     parkw             Parks mount and waits for completion in 1 min. Replies success or timeout");
+            Console.WriteLine("     parkw             Parks mount and waits for completion in 1 min. Replies success or timeout");
             Console.WriteLine("     stop              Stops tracking. No reply.");
             Console.WriteLine("     start             Starts tracking. No reply.");
             Console.WriteLine("     gpsupdate         Updates site info from GPS. Reports success or error.");
@@ -408,23 +250,13 @@ namespace MountSend
             Console.WriteLine();
         }
 
-        public static string AltString(int s)
-        {
-            return (s >= 0 ? "+" : "") + s.ToString().Trim();
-        }
 
-        public static string MountDecimal(decimal n)
+        public static string ParseDecimal(string s)
         {
-            var str = string.Format(n.ToString(CultureInfo.InvariantCulture), "0.0");
-
-            return str.Trim().Replace(_decimalSeparator, ".");
-        }
-
-        public static decimal ParseDecimal(string s)
-        {
-            string k = s.Replace(",", _decimalSeparator);
-            k = k.Replace(".", _decimalSeparator);
-            return decimal.Parse(k.Trim());
+            string decimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            string k = s.Replace(",", decimalSeparator);
+            k = k.Replace(".", decimalSeparator);
+            return k.Trim();
         }
     }
 }
