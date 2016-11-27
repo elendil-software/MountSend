@@ -247,6 +247,7 @@ namespace MountSend
             Console.WriteLine("     time              Updates mount time from PC clock (both date and time).");
             Console.WriteLine("     save              Saves the mount IP in a user environment variable (MOUNT).");
             Console.WriteLine("     fw                Get the mount firmware version.");
+            Console.WriteLine("     shutdown          Shuts down the mount.");
             Console.WriteLine();
             Console.WriteLine("     NOTE! you can leave out the IP address and add '/a' as a last argument");
             Console.WriteLine("           to have mountsend use the environment variable 'MOUNT' for getting");

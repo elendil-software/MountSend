@@ -1,6 +1,6 @@
 ﻿namespace MountSend.Commands.Others
 {
-    public class ShutdownCommand : ICommand<object>
+    public class ShutdownCommand : ICommand<bool>
     {
         private readonly CommandSender _sender;
 
@@ -11,13 +11,13 @@
 
         #region Implementation of ICommand
 
-        public double MinFirmwareVersion { get; } = 0;
+        public double MinFirmwareVersion { get; } = 2.0902;
         public string Message { get; } = "";
 
-        public object Execute(string[] parameters = null)
+        public bool Execute(string[] parameters = null)
         {
             _sender.SendCommand(":shutdown#");
-            return null;
+            return _sender.GetReply(1000) != "0";
         }
 
         #endregion
