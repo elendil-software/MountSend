@@ -53,6 +53,7 @@
     <Compile Include="Commands\Information\FirmwareCommand.cs" />
     <Compile Include="Commands\Information\StatusCommand.cs" />
     <Compile Include="Commands\Movement\SlewAltAzCommand.cs" />
+    <Compile Include="Commands\Others\ShutdownCommand.cs" />
     <Compile Include="Commands\Set\SetTimeCommand.cs" />
     <Compile Include="Commands\Set\SetMaxSlewCommand.cs" />
     <Compile Include="Commands\Set\SetRefractionCommand.cs" />

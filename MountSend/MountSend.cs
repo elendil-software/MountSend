@@ -8,6 +8,7 @@ using MountSend.Commands.Custom;
 using MountSend.Commands.GPS;
 using MountSend.Commands.HomePark;
 using MountSend.Commands.Information;
+using MountSend.Commands.Others;
 using MountSend.Commands.Set;
 
 namespace MountSend
@@ -162,6 +163,10 @@ namespace MountSend
                     commandResult = ((SetTimeCommand) command).Execute();
                     message = ((SetTimeCommand) command).Message;
                     break;
+                    
+                case "shutdown":
+                    new ShutdownCommand(_commandSender).Execute();
+                    break;
 
                 case "save":
                     SaveIpAddress(args);
@@ -171,6 +176,7 @@ namespace MountSend
                     command = new FirmwareCommand(_commandSender);
                     commandResult = ((FirmwareCommand) command).Execute();
                     break;
+
                 default:
                     Help();
                     Environment.Exit(0);
