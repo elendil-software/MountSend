@@ -45,7 +45,7 @@ namespace MountSend.Commands
             for (int i = 1; i <= timeout; i++)
             {
                 if (stream.DataAvailable)
-                    break; // TODO: might not be correct. Was : Exit For
+                    break;
                 Thread.Sleep(1);
             }
 
