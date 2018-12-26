@@ -77,7 +77,6 @@ namespace MountSend.Commands.GPS
         private static string AltString(string alt)
         {
             return alt.Contains("-") ? alt : $"+{alt}";
-            //return (s >= 0 ? "+" : "") + s.ToString().Trim();
         }
     }
 }

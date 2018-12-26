@@ -40,7 +40,6 @@ namespace MountSend.Commands
 
         public string GetReply(int timeout)
         {
-            //stream.ReadTimeout = timeout
             string s = "";
             for (int i = 1; i <= timeout; i++)
             {
