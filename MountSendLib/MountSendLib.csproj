@@ -1,74 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2FA9EFC7-61E2-4D6B-84A1-F46DC8FFC802}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFrameworks>netstandard2.0;net40;net45</TargetFrameworks>
     <RootNamespace>MountSend</RootNamespace>
-    <AssemblyName>MountSendLib</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <Version>3.2.0</Version>
+    <Authors>Per Frejvall, Julien Tschäppät</Authors>
+    <Copyright>Copyright © 2012-2016 Per Frejvall, 2016-2018 Julien Tschäppät</Copyright>
+    <Product>10Micron MountSend Lib</Product>
+    <PackageLicenseUrl>https://github.com/elendil-software/MountSend/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/elendil-software/MountSend/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/elendil-software/MountSend/</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageId>10MicronMountSend</PackageId>
+    <Description>MountSend is a software that allows to send command to 10Micron Mounts (www.10micron.eu). It initially has been developped by Per Frejvall</Description>
+    <PackageReleaseNotes>https://github.com/elendil-software/MountSend/releases</PackageReleaseNotes>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Commands\Alignment\StartTrackingCommand.cs" />
-    <Compile Include="Commands\Alignment\StopTrackingCommand.cs" />
-    <Compile Include="Commands\CommandSender.cs" />
-    <Compile Include="Commands\Custom\CustomCommand.cs" />
-    <Compile Include="Commands\GPS\GPSUpdateCommand.cs" />
-    <Compile Include="Commands\ICommand.cs" />
-    <Compile Include="Commands\HomePark\ParkAndWaitCommand.cs" />
-    <Compile Include="Commands\HomePark\UnparkCommand.cs" />
-    <Compile Include="Commands\HomePark\ParkCommand.cs" />
-    <Compile Include="Commands\Information\FirmwareCommand.cs" />
-    <Compile Include="Commands\Information\StatusCommand.cs" />
-    <Compile Include="Commands\Movement\SlewAltAzCommand.cs" />
-    <Compile Include="Commands\Others\ShutdownCommand.cs" />
-    <Compile Include="Commands\Set\SetTimeCommand.cs" />
-    <Compile Include="Commands\Set\SetMaxSlewCommand.cs" />
-    <Compile Include="Commands\Set\SetRefractionCommand.cs" />
-    <Compile Include="MountState.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Status.cs" />
-    <Compile Include="StringExtension.cs" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

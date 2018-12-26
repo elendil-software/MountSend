@@ -55,7 +55,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MountSendLib\MountSendLib.csproj">
-      <Project>{2FA9EFC7-61E2-4D6B-84A1-F46DC8FFC802}</Project>
+	  <SetTargetFramework>TargetFramework=net40</SetTargetFramework>
+      <Project>{86c20107-13c6-427b-b011-6eb924871a74}</Project>
       <Name>MountSendLib</Name>
     </ProjectReference>
   </ItemGroup>
