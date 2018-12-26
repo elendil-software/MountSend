@@ -11,8 +11,6 @@ namespace MountSend.Commands.GPS
             _sender = sender;
         }
 
-        #region Implementation of ICommand
-
         public double MinFirmwareVersion { get; } = 0;
         public string Message { get; private set; } = "";
 
@@ -81,7 +79,5 @@ namespace MountSend.Commands.GPS
             return alt.Contains("-") ? alt : $"+{alt}";
             //return (s >= 0 ? "+" : "") + s.ToString().Trim();
         }
-
-        #endregion
     }
 }

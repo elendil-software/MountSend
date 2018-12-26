@@ -9,8 +9,6 @@
             _sender = sender;
         }
 
-        #region Implementation of ICommand
-
         public double MinFirmwareVersion { get; } = 2.0902;
         public string Message { get; } = "";
 
@@ -19,7 +17,5 @@
             _sender.SendCommand(":shutdown#");
             return _sender.GetReply(1000) != "0";
         }
-
-        #endregion
     }
 }

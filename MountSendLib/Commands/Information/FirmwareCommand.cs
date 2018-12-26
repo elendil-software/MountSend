@@ -9,8 +9,6 @@
             _sender = sender;
         }
 
-        #region Implementation of ICommand
-
         public double MinFirmwareVersion { get; } = 2.0808;
         public string Message { get; } = "";
 
@@ -31,7 +29,5 @@
 
             return firmWareVersion;
         }
-
-        #endregion
     }
 }

@@ -11,8 +11,6 @@ namespace MountSend.Commands.HomePark
             _sender = sender;
         }
 
-        #region Implementation of ICommand
-
         public double MinFirmwareVersion { get; } = 0;
         public string Message { get; private set; } = "";
 
@@ -24,7 +22,5 @@ namespace MountSend.Commands.HomePark
             Message = succeeded ? "Parked OK" : "Timeout";
             return succeeded;
         }
-
-        #endregion
     }
 }

@@ -11,8 +11,6 @@ namespace MountSend.Commands.GPS
             _sender = sender;
         }
 
-        #region Implementation of ICommand
-
         public double MinFirmwareVersion { get; } = 0;
         public string Message { get; private set; } = "";
 
@@ -24,7 +22,5 @@ namespace MountSend.Commands.GPS
             Message = succeeded ? "Updated" : "?Error";
             return succeeded;
         }
-
-        #endregion
     }
 }

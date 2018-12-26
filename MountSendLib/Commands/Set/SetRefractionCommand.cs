@@ -11,8 +11,6 @@ namespace MountSend.Commands.Set
             _sender = sender;
         }
 
-        #region Implementation of ICommand
-
         public double MinFirmwareVersion { get; } = 0;
         public string Message { get; private set; } = "";
 
@@ -49,8 +47,6 @@ namespace MountSend.Commands.Set
                 return false;
             }
         }
-
-        #endregion
 
         public static string MountDecimal(decimal n)
         {
