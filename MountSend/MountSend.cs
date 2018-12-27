@@ -8,6 +8,7 @@ using MountSend.Commands.Custom;
 using MountSend.Commands.GPS;
 using MountSend.Commands.HomePark;
 using MountSend.Commands.Information;
+using MountSend.Commands.Movement;
 using MountSend.Commands.Others;
 using MountSend.Commands.Set;
 
@@ -114,9 +115,9 @@ namespace MountSend
                     break;
 
                 case "gpsupdate":
-                    command = new GPSUpdateCommand(_commandSender);
-                    commandResult = ((GPSUpdateCommand) command).Execute();
-                    message = ((GPSUpdateCommand) command).Message;
+                    command = new GpsUpdateCommand(_commandSender);
+                    commandResult = ((GpsUpdateCommand) command).Execute();
+                    message = ((GpsUpdateCommand) command).Message;
                     break;
 
                 case "move":
