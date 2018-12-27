@@ -22,4 +22,4 @@
 
 ## 2.10.0 (2016-10-15)
 
-- First C# version based on the last known VB version developped by Per Frejvall
+- First C# version based on the VB version developed by Per Frejvall
