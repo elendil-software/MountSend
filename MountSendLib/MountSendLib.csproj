@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net40;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
     <RootNamespace>MountSend</RootNamespace>
     <Version>3.2.0</Version>
     <Authors>Per Frejvall, Julien Tschäppät</Authors>
     <Copyright>Copyright © 2012-2016 Per Frejvall, 2016-2018 Julien Tschäppät</Copyright>
-    <Product>10Micron MountSend Lib</Product>
+    <Product>10Micron MountSend</Product>
     <PackageLicenseUrl>https://github.com/elendil-software/MountSend/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/elendil-software/MountSend/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/elendil-software/MountSend/</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageId>10MicronMountSend</PackageId>
-    <Description>MountSend is a software that allows to send command to 10Micron Mounts (www.10micron.eu). It initially has been developped by Per Frejvall</Description>
-    <PackageReleaseNotes>https://github.com/elendil-software/MountSend/releases</PackageReleaseNotes>
+    <Description>MountSend is a software that allows to send command to 10Micron Mounts (www.10micron.eu). It has initially been developed by Per Frejvall</Description>
+    <PackageReleaseNotes>https://github.com/elendil-software/MountSend/releases/latest</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
