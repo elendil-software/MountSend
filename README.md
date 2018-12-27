@@ -1,11 +1,12 @@
 # MountSend
 
-Copyright (c) 2012-2016 Per Frejvall, 2016-2018 Julien Tsch�pp�t
+Copyright (c) 2012-2016 Per Frejvall, 2016-2018 Julien Tschäppät
+Copyright (c) 2016-2018 Julien Tschäppät
 
 ## Introduction
 
 MountSend is a software that allows to send command to 10Micron Mounts (www.10micron.eu).
-It initially has been developped by Per Frejvall
+It initially has been developed by Per Frejvall
 
 ## License
 
