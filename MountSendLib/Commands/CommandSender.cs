@@ -7,8 +7,8 @@ namespace MountSend.Commands
 {
     public class CommandSender
     {
-        private string ipAddress;
-        private TcpClient tcpClient = new TcpClient();
+        private readonly string ipAddress;
+        private readonly TcpClient tcpClient = new TcpClient();
         private NetworkStream stream;
 
         public CommandSender(string ipAddress)
