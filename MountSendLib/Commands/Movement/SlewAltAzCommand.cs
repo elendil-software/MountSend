@@ -1,6 +1,6 @@
 ﻿using MountSend.Commands.Alignment;
 
-namespace MountSend.Commands.GPS
+namespace MountSend.Commands.Movement
 {
     public class SlewAltAzCommand : ICommand<bool>
     {
