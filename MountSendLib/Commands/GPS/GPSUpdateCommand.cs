@@ -2,11 +2,11 @@
 
 namespace MountSend.Commands.GPS
 {
-    public class GPSUpdateCommand : ICommand<bool>
+    public class GpsUpdateCommand : ICommand<bool>
     {
         private readonly CommandSender _sender;
 
-        public GPSUpdateCommand(CommandSender sender)
+        public GpsUpdateCommand(CommandSender sender)
         {
             _sender = sender;
         }
