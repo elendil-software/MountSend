@@ -24,7 +24,7 @@ namespace MountSend.Commands.Movement
 
             var az = parameters[0];
             var alt = parameters[1];
-            var enableTraking = parameters[2] == "1";
+            var enableTracking = parameters[2] == "1";
 
             _sender.SendCommand($":Sa{AltString(alt)}*00#");
             string rep = _sender.GetReply(1000);
@@ -41,7 +41,7 @@ namespace MountSend.Commands.Movement
 
                     if (q.Left(1) == "0")
                     {
-                        if (enableTraking)
+                        if (enableTracking)
                         {
                             if (!Status.WaitForStatus(_sender, MountState.Stationary, 60))
                             {

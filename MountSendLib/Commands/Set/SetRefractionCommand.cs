@@ -48,7 +48,7 @@ namespace MountSend.Commands.Set
             }
         }
 
-        public static string MountDecimal(decimal n)
+        private static string MountDecimal(decimal n)
         {
             var str = string.Format(n.ToString(CultureInfo.InvariantCulture), "0.0");
             var decimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
