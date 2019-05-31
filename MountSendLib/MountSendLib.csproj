@@ -15,5 +15,7 @@
     <PackageReleaseNotes>https://github.com/elendil-software/MountSend/releases/latest</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <AssemblyVersion>3.2.0</AssemblyVersion>
+    <FileVersion>3.2.0</FileVersion>
   </PropertyGroup>
 </Project>
