@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.3.0 (2019-05-xx)
+
+## ADDED 
+
+- Wake On LAN commands
+
 ## 3.2.0 (2018-12-27)
 
 ### CHANGED
