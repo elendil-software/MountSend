@@ -77,6 +77,7 @@ pipeline {
         expression { params.Create_Tag == true }
       }
       steps {
+	    powershell(script: "${env.ScriptsDir}\\Release-UpdateChangelogVersion.ps1", label: 'Update Changelog version and date')
         powershell(script: "${env.ScriptsDir}\\Git-CreateTag.ps1", label: 'Tag version')
       }
     }

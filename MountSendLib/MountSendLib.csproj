@@ -6,7 +6,6 @@
     <Authors>Per Frejvall, Julien Tschäppät</Authors>
     <Copyright>Copyright © 2012-2016 Per Frejvall, 2016-2019 Julien Tschäppät</Copyright>
     <Product>10Micron MountSend</Product>
-    <PackageLicenseUrl>https://github.com/elendil-software/MountSend/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/elendil-software/MountSend/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/elendil-software/MountSend/</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
@@ -17,5 +16,13 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <AssemblyVersion>3.2.0</AssemblyVersion>
     <FileVersion>3.2.0</FileVersion>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageTags>Astronomy 10Micron</PackageTags>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 </Project>
