@@ -35,7 +35,6 @@ namespace MountSend
 
                 if (args[0] == "wol")
                 {
-                    string macAddress = args[1];
                     var command = new WakeOnLanCommand();
                     command.Execute(new[] {args[1]});
                     return;
