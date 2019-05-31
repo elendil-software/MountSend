@@ -9,6 +9,7 @@ using MountSend.Commands.GPS;
 using MountSend.Commands.HomePark;
 using MountSend.Commands.Information;
 using MountSend.Commands.Movement;
+using MountSend.Commands.Network;
 using MountSend.Commands.Others;
 using MountSend.Commands.Set;
 
@@ -30,6 +31,14 @@ namespace MountSend
                 {
                     Help();
                     Environment.Exit(0);
+                }
+
+                if (args[0] == "wol")
+                {
+                    string macAddress = args[1];
+                    var command = new WakeOnLanCommand();
+                    command.Execute(new[] {args[1]});
+                    return;
                 }
 
                 if (args[args.Length - 1] == "/a")
@@ -164,6 +173,18 @@ namespace MountSend
                     commandResult = ((SetTimeCommand) command).Execute();
                     message = ((SetTimeCommand) command).Message;
                     break;
+                
+                case "getwol":
+                    command = new GetWakeOnLanCommand(_commandSender);
+                    commandResult = ((GetWakeOnLanCommand) command).Execute();
+                    message = ((GetWakeOnLanCommand) command).Message;
+                    break;
+                
+                case "setwol":
+                    command = new SetWakeOnLanCommand(_commandSender);
+                    commandResult = ((SetWakeOnLanCommand) command).Execute(new []{args[2 - auto]});
+                    message = ((SetWakeOnLanCommand) command).Message;
+                    break;
                     
                 case "shutdown":
                     new ShutdownCommand(_commandSender).Execute();
@@ -232,6 +253,8 @@ namespace MountSend
             Console.WriteLine(description);
             Console.WriteLine();
             Console.WriteLine("Usage:");
+            Console.WriteLine(" Wake on LAN: mountsend wol <mac-address>");
+            Console.WriteLine(" ");
             Console.WriteLine(" mountsend <ip-address> <command> [<options>].");
             Console.WriteLine("     unpark            Unparks mount. No reply.");
             Console.WriteLine("     park              Parks mount. No reply.");
