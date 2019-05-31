@@ -18,15 +18,17 @@ namespace MountSend.Commands.Network
             }
             
             string macAddress = Regex.Replace(parameters[0], @"[^0-9A-Fa-f]", "");
-            
-            var udpClient = new UdpClient();
-            udpClient.Connect(IPAddress.Parse("255.255.255.255"), 0x2fff);
-            udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 0);
 
-            byte[] magicPacket = BuildMagicPacket(macAddress);
+            using (var udpClient = new UdpClient())
+            {
+                udpClient.Connect(IPAddress.Parse("255.255.255.255"), 0x2fff);
+                udpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 0);
 
-            int returnValue = udpClient.Send(magicPacket, magicPacket.Length); 
-            
+                byte[] magicPacket = BuildMagicPacket(macAddress);
+
+                udpClient.Send(magicPacket, magicPacket.Length);
+            }
+
             return null;
         }
 
