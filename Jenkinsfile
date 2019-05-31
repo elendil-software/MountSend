@@ -16,6 +16,11 @@ pipeline {
       defaultValue: false,
       description: 'Publish NuGet Package'
     )
+	string(
+      name: 'NextVersion',
+      defaultValue: '',
+      description: 'Next Version'
+    )
     booleanParam(
       name: 'Create_Tag',
       defaultValue: false,
@@ -30,6 +35,7 @@ pipeline {
     }
     stage('GitVersion') {
       steps {
+	    powershell(script: "${env.ScriptsDir}\\GitVersion-SetNextVersion.ps1", label: 'Set next version')
         powershell(script: "${env.ScriptsDir}\\GitVersion.ps1", label: 'GitVersion')
         script {
           readFile('gitversion.properties').split("\r\n").each { line ->
