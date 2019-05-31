@@ -4,7 +4,7 @@
     <RootNamespace>MountSend</RootNamespace>
     <Version>3.2.0</Version>
     <Authors>Per Frejvall, Julien Tschäppät</Authors>
-    <Copyright>Copyright © 2012-2016 Per Frejvall, 2016-2018 Julien Tschäppät</Copyright>
+    <Copyright>Copyright © 2012-2016 Per Frejvall, 2016-2019 Julien Tschäppät</Copyright>
     <Product>10Micron MountSend</Product>
     <PackageLicenseUrl>https://github.com/elendil-software/MountSend/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/elendil-software/MountSend/</PackageProjectUrl>
