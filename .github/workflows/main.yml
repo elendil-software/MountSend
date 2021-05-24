@@ -1,0 +1,94 @@
+name: Main Workflow
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      push-nuget:
+        description: 'Push NuGet'
+        required: true
+        default: 'false'
+      create-release:
+        description: 'Create Release'
+        required: true
+        default: 'false'
+
+jobs:
+  build:
+    runs-on: windows-latest  
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.0.2
+      
+    - name: Add GitHub NuGet Source
+      if: ${{ github.event.inputs.create-release == 'true' || github.event.inputs.push-nuget == 'true' }}
+      run: nuget source Add -Name github -Source ${{ env.nuget-url }} -Username ${{ env.nuget-user }} -Password ${{ env.nuget-token }} -StorePasswordInClearText
+      env:
+        nuget-url: https://nuget.pkg.github.com/elendil-software/index.json
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        nuget-user: ${{ secrets.NUGET_GITHUB_USER }}
+        
+    - name: Execute GitVersion - Dev
+      if: ${{ github.event_name == 'pull_request' || github.event.inputs.create-release == 'false' }}
+      run: gitversion /config ./.github/GitVersion.yml /output buildserver /updateprojectfiles
+
+    - name: Execute GitVersion - Release
+      if: ${{ github.event.inputs.create-release == 'true' }}
+      run: gitversion /config ./.github/GitVersion-Release.yml /output buildserver /updateprojectfiles
+    
+    - name: Restore
+      run: nuget restore
+    
+    - name: Build
+      run: msbuild /t:Rebuild /p:Configuration=Release
+      
+
+    - name: NuGet Push
+      if: ${{ github.event.inputs.create-release == 'true' || github.event.inputs.push-nuget == 'true' }}
+      run: nuget push **/*.nupkg -Source github -ApiKey ${{ env.repo-token }}
+      env:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Build Zip Archive
+      run: |
+        cd MountSend/bin/Release
+        mkdir "MountSend-${{ env.GitVersion_SemVer }}"
+        cp .\MountSend.exe .\MountSend-${{ env.GitVersion_SemVer }}\
+        cp .\MountSendLib.dll .\MountSend-${{ env.GitVersion_SemVer }}\
+        cp .\Mountsend.pdf .\MountSend-${{ env.GitVersion_SemVer }}\
+        7z a -tzip "MountSend-${{ env.GitVersion_SemVer }}.zip" .\MountSend-${{ env.GitVersion_SemVer }}\
+      
+    - name: Create Tag
+      if: ${{ github.event.inputs.create-release == 'true' }}
+      run: |
+        git config user.email "git@elendil.software"
+        git config user.name "Elendil Software Workflow"
+        git tag -a ${{ env.GitVersion_SemVer }} -m "${{ env.GitVersion_SemVer }}"
+        git push --follow-tags
+      
+    - name: Build Changelog
+      if: ${{ github.event.inputs.create-release == 'true' }}
+      id: build_changelog
+      uses: mikepenz/release-changelog-builder-action@v1.7.1
+      with:
+        failOnError: true
+        configuration: "./.github/release-changelog-builder-configuration.json"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                
+    - name: Create Release
+      if: ${{ github.event.inputs.create-release == 'true' }}
+      uses: ncipollo/release-action@v1
+      with:
+        artifactErrorsFailBuild: true
+        body: "${{steps.build_changelog.outputs.changelog}}"
+        tag: "${{ env.GitVersion_SemVer }}"
+        artifacts: "MountSendLib/bin/Release/*.nupkg,MountSend/bin/Release/*.zip,MountSend/bin/Release/*.pdf"
+        token: ${{ secrets.GITHUB_TOKEN }}
