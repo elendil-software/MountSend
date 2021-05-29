@@ -1,6 +1,6 @@
 # MountSend
 
-Copyright (c) 2012-2016 Per Frejvall, 2016-2018 Julien Tschäppät
+Copyright (c) 2012-2016 Per Frejvall
 Copyright (c) 2016-2018 Julien Tschäppät
 
 ## Introduction
