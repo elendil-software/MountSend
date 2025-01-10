@@ -1,0 +1,20 @@
+<Project>
+	<PropertyGroup>
+        <RootNamespace>MountSend</RootNamespace>
+        <Product>10Micron MountSend</Product>
+		<Authors>Per Frejvall, Julien Tschäppät</Authors>
+        <Description>MountSend is a software that allows to send command to 10Micron Mounts (www.10micron.eu). It has initially been developed by Per Frejvall</Description>
+        <Copyright>Copyright © 2012-2016 Per Frejvall, 2016-2025 Julien Tschäppät</Copyright>
+        <RepositoryUrl>https://github.com/elendil-software/MountSend/</RepositoryUrl>
+        <RepositoryType>GitHub</RepositoryType>
+        <PackageProjectUrl>https://github.com/elendil-software/MountSend/</PackageProjectUrl>
+        <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
+        <PackageReleaseNotes>https://github.com/elendil-software/MountSend/releases/latest</PackageReleaseNotes>
+		<PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+        <PackageTags>Astronomy 10Micron</PackageTags>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+	</PropertyGroup>
+</Project>
+
+
+
