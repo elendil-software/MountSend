@@ -63,10 +63,12 @@ namespace MountSend
 
                 var result = ExecuteCommand(args, commandString, auto);
                 Console.WriteLine(result);
+                Environment.ExitCode = 0;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Environment.ExitCode = -1;
             }
         }
 
