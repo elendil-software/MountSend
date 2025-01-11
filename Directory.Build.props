@@ -10,7 +10,6 @@
         <PackageProjectUrl>https://github.com/elendil-software/MountSend/</PackageProjectUrl>
         <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
         <PackageReleaseNotes>https://github.com/elendil-software/MountSend/releases/latest</PackageReleaseNotes>
-		<PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
         <PackageTags>Astronomy 10Micron</PackageTags>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
