@@ -10,4 +10,10 @@
     <ProjectReference Include="..\MountSendLib\MountSendLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Mountsend.pdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
