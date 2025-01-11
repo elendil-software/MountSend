@@ -1,0 +1,12 @@
+﻿name: "Pull Request"
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/sw_build.yml
+    with:
+      gitversion-config: './.github/GitVersion.yml'
+      build_installer: false
