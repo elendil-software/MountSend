@@ -15,7 +15,15 @@
     {
       "title": "## 📦 Dependencies",
       "labels": ["dependencies"]
+    },
+    {
+      "title": "## 💬 Other",
+      "labels": ["other"]
     }
+  ],
+  "ignore_labels": [
+    "ignore",
+    "documentation"
   ],
   "pr_template": "- ${{TITLE}} (#${{NUMBER}})"
 }
