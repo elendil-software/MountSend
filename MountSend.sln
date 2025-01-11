@@ -13,6 +13,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{F141C086-C9F6-4318-B9E6-0B01BB3A0CAF}"
+	ProjectSection(SolutionItems) = preProject
+		.github\pr-labeler.yml = .github\pr-labeler.yml
+		.github\GitVersion.yml = .github\GitVersion.yml
+		.github\GitVersion-Release.yml = .github\GitVersion-Release.yml
+		.github\release-changelog-builder-configuration.json = .github\release-changelog-builder-configuration.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{72F8571D-56AF-48AF-A5F0-414018F0DAE5}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\main.yml = .github\workflows\main.yml
+		.github\workflows\Pull-Request-Labeler.yml = .github\workflows\Pull-Request-Labeler.yml
+		.github\workflows\Pull-Request.yml = .github\workflows\Pull-Request.yml
+		.github\workflows\Pre-Version.yml = .github\workflows\Pre-Version.yml
+		.github\workflows\Release.yml = .github\workflows\Release.yml
+		.github\workflows\sw_build.yml = .github\workflows\sw_build.yml
+		.github\workflows\sw_tag-release.yml = .github\workflows\sw_tag-release.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,5 +52,8 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0687883E-3E64-474A-9BE0-074FDD86A554}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{72F8571D-56AF-48AF-A5F0-414018F0DAE5} = {F141C086-C9F6-4318-B9E6-0B01BB3A0CAF}
 	EndGlobalSection
 EndGlobal
