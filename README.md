@@ -3,6 +3,10 @@
 Copyright (c) 2012-2016 Per Frejvall
 Copyright (c) 2016-2018 Julien Tschäppät
 
+## NOTICE: no longer maintained. :warning:
+
+This project isn't maintained anymore. It still works, though no recent 10Micron command has been implemented.  
+
 ## Introduction
 
 MountSend is a software that allows to send command to 10Micron Mounts (www.10micron.eu).
